@@ -1,0 +1,10 @@
+// METADATA-START
+// id: SOC-DET-040 | mitre: T1486, T1078 | nist: DE.CM-7 | iso27001: A.8.16
+// soc2: CC7.2 | severity: critical | data_source: GuardDuty
+// METADATA-END
+AWS_GuardDuty
+| where TimeGenerated > ago(1d)
+| where Severity >= 7
+| where Title has_any ("Cryptocurrency", "EC2", "UnauthorizedAccess", "PrivilegeEscalation")
+| extend Account = Resource_AccountId_s, Instance = Resource_InstanceId_s
+| project TimeGenerated, Title, Description, Severity, Account, Instance
