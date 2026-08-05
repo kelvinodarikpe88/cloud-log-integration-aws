@@ -1,0 +1,23 @@
+# deploy/cloudformation.yml - AWS SOC infrastructure
+AWSTemplateFormatVersion: '2010-09-09'
+Description: CloudTrail + GuardDuty + Security Hub for SOC lab
+Resources:
+  TrailBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub 'cloud-soc-trail-${AWS::AccountId}'
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+  SocTrail:
+    Type: AWS::CloudTrail::Trail
+    Properties:
+      IsMultiRegionTrail: true
+      S3BucketName: !Ref TrailBucket
+      EnableLogFileValidation: true
+  GuardDutyDetector:
+    Type: AWS::GuardDuty::Detector
+    Properties:
+      Enable: true
